@@ -57,7 +57,7 @@ if (isset($_SESSION['user']['id'])) {
     $currentUser = $userModel->getUser('id', $_SESSION['user']['id']);
 } else {
     Message::set('error', 'Вы не авторизованы');
-    Network::onRedirect(Network::$path_login);
+    Network::onRedirect(Network::$paths['login']);
     exit();
 }
 
@@ -73,6 +73,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_article'])) {
 //### LOAD ###
 
 $articles = $articleModel->getListMyArticle($currentUser['id']);
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_mail'])) {
+    (new Network())->onMail($_POST['send_user'], $_POST['subject'], $_POST['message']);
+    Message::set('success', "Письмо успешно отправлено на email:" . $_POST['send_user']);
+    Network::onRedirect(Network::$paths['account']);
+    exit();
+}
 
 //### VIEW ###
 

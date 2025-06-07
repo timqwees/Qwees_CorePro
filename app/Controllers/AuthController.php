@@ -70,7 +70,7 @@ class AuthController extends Network
     public function onLogin()
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            self::onRedirect(self::$path_login);
+            self::onRedirect(self::$paths['login']);
             return false;
         }
 
@@ -79,12 +79,12 @@ class AuthController extends Network
 
         if (empty($mail) || empty($password)) {
             Message::set('error', 'Пожалуйста, заполните все поля');
-            self::onRedirect(self::$path_login);
+            self::onRedirect(self::$paths['login']);
         }
 
         if (!filter_var($mail, FILTER_VALIDATE_EMAIL)) {
             Message::set('error', 'Неверный формат почты');
-            self::onRedirect(self::$path_login);
+            self::onRedirect(self::$paths['login']);
         }
 
         try {
@@ -100,14 +100,14 @@ class AuthController extends Network
                     'mail' => $user['mail']
                 ];
                 Message::set('success', 'Вы успешно вошли в систему');
-                return self::onRedirect(self::$path_account);
+                return self::onRedirect(self::$paths['account']);
             } else {
                 Message::set('error', 'Неверная почта или пароль');
-                return self::onRedirect(self::$path_login);
+                return self::onRedirect(self::$paths['login']);
             }
         } catch (\Exception $e) {
             Message::set('error', 'Произошла ошибка при входе в систему');
-            return self::onRedirect(self::$path_login);
+            return self::onRedirect(self::$paths['login']);
         }
     }
 
@@ -128,22 +128,22 @@ class AuthController extends Network
             // Валидация
             if (empty($username) || empty($password) || empty($mail) || empty($group)) {
                 Message::set('error', 'Пожалуйста, заполните все поля');
-                return self::onRedirect(self::$path_regist);
+                return self::onRedirect(self::$paths['regist']);
             }
 
             if (strlen($username) < 3) {
                 Message::set('error', 'Имя пользователя должно содержать минимум 3 символа');
-                return self::onRedirect(self::$path_regist);
+                return self::onRedirect(self::$paths['regist']);
             }
 
             if (strlen($password) < 6) {
                 Message::set('error', 'Пароль должен содержать минимум 6 символов');
-                return self::onRedirect(self::$path_regist);
+                return self::onRedirect(self::$paths['regist']);
             }
 
             if (!filter_var($mail, FILTER_VALIDATE_EMAIL)) {
                 Message::set('error', 'Неверный формат почты');
-                return self::onRedirect(self::$path_regist);
+                return self::onRedirect(self::$paths['regist']);
             }
 
             try {
@@ -152,7 +152,7 @@ class AuthController extends Network
                 $stmt->execute([$username]);
                 if ($stmt->fetchColumn() > 0) {
                     Message::set('error', "Пользователь с именем: $username уже существует");
-                    self::onRedirect(self::$path_regist);
+                    self::onRedirect(self::$paths['regist']);
                     return false;
                 }
 
@@ -160,7 +160,7 @@ class AuthController extends Network
                 $stmt->execute([$mail]);
                 if ($stmt->fetchColumn() > 0) {
                     Message::set('error', "Почта: $mail уже существует");
-                    return self::onRedirect(self::$path_regist);
+                    return self::onRedirect(self::$paths['regist']);
                 }
 
                 $stmt = $this->network->QuaryRequest__Auth['onRegist_Create_User'];
@@ -173,10 +173,10 @@ class AuthController extends Network
                 ]);
 
                 Message::set('success', "Регистрация успешна! $username, Теперь вы можете войти");
-                return self::onRedirect(self::$path_login);
+                return self::onRedirect(self::$paths['login']);
             } catch (\PDOException $e) {
                 Message::set('error', 'Ошибка при регистрации: ' . $e->getMessage());
-                return self::onRedirect(self::$path_regist);
+                return self::onRedirect(self::$paths['regist']);
             }
         }
     }
@@ -192,6 +192,6 @@ class AuthController extends Network
         Network::destroy();
 
         Message::set('success', 'Вы успешно вышли из системы');
-        return self::onRedirect(self::$path_login);
+        return self::onRedirect(self::$paths['login']);
     }
 }

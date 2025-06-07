@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en-US">
 
 <head>
   <meta charset="UTF-8" />
@@ -12,11 +12,15 @@
   <meta property="og:type" content="website" />
   <meta content="width=device-width, initial-scale=1" name="viewport" />
   <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../../../../public/src/css/style.css">
   <script defer src="../../../../public/pages/account/view/js/referrer.js"></script>
+  <!-- TRANSLATED -->
+  <script defer src="../../../../public/src/js/lang.js"></script>
 </head>
 
 <body>
+
   <main>
     <div class="sidebar">
       <div class="profile">
@@ -67,6 +71,10 @@
               <span>Выход</span>
             </a>
           </li>
+          <li>
+            <!-- ##### TRANSALTED #### -->
+            <div id="google_translate_element"></div>
+          </li>
         </ul>
       </nav>
     </div>
@@ -77,15 +85,41 @@
             src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/94/Apple_Developer_brandmark.svg/2560px-Apple_Developer_brandmark.svg.png"
             alt="Developer" height="100px">
           <div class="content-text">
-            <span>Email:
+            <span>Developers email addres:
               <?php echo htmlspecialchars($currentUser['mail']); ?>!
             </span>
-            <span class="<?php echo $message['type']; ?>">
+            <?php if (isset($message['message']) && !empty($message['message'])): ?>
+            <span class="alert alert-<?php echo $message['type']; ?>">
               <?php echo $message['message']; ?>
             </span>
+            <?php endif; ?>
           </div>
-        </div>
       </article>
+
+      <!-- #########. Отправить письмо ######### -->
+
+      <section>
+        <div class="create-article">
+          <h2>Отправить письмо</h2>
+          <form method="POST" action="">
+            <div class="form-group">
+              <label for="send_user">Email получателя:</label>
+              <input type="email" id="send_user" name="send_user" required>
+            </div>
+            <div class="form-group">
+              <label for="subject">Тема:</label>
+              <input type="text" id="subject" name="subject" required>
+            </div>
+            <div class="form-group">
+              <label for="message">Сообщение:</label>
+              <textarea id="message" name="message" rows="5" required></textarea>
+            </div>
+            <button type="submit" name="send_mail">Отправить</button>
+          </form>
+        </div>
+      </section>
+
+      <!-- #########. Блог ######### -->
 
       <article id="blog">
         <a id="referrer-title"></a>
@@ -107,7 +141,8 @@
             </form>
           </div>
 
-          <!-- Список статей -->
+          <!-- #########. Список статей ######### -->
+
           <h2>Мои статьи</h2>
           <div class="blog-posts">
 

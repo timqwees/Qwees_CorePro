@@ -6,7 +6,7 @@ use App\Models\Network\Network;
 use App\Models\Network\Message;
 
 if (isset($_SESSION['user'])) {
- Network::onRedirect(Network::$path_account);
+ Network::onRedirect(Network::$paths['account']);
  exit();
 }
 

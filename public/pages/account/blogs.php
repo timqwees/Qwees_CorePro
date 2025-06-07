@@ -57,7 +57,7 @@ if (isset($_SESSION['user']['id'])) {
 } else {
     $currentUser = false;
     Message::set('error', 'Вы не авторизованы');
-    Network::onRedirect(Network::$path_login);
+    Network::onRedirect(Network::$paths['login']);
     exit();
 }
 

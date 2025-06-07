@@ -41,7 +41,7 @@ use App\Config\Database;
 use App\Models\Router\Routes;
 use App\Config\Session;
 use App\Models\Network\Message;
-
+use App\Controllers\Structure;
 class Network extends Session
 {
     private static $db;
@@ -67,13 +67,16 @@ class Network extends Session
     public static $table_articles = 'articles';
 
     //### PUBLIC PATH ###
-    public static $path_login = 'search/login';
-    public static $path_regist = 'search/regist';//not in the search
-    public static $path_account = 'search/account';//not in the search
-    public static $path_logout = 'search/logout';//not in the search
+    public static $paths = [
+        'login' => 'search/login',
+        'regist' => 'search/regist',
+        'account' => 'search/account',
+        'logout' => 'search/logout',
+    ];
 
-    public function __construct(
-    ) {
+    public function __construct()
+    {
+        Session::init();
         self::$db = Database::getConnection();
         self::onTableCheck(self::$table_users);
         self::onTableCheck(self::$table_articles);
@@ -101,12 +104,13 @@ class Network extends Session
                     if (!self::onTableExists(self::$table_users)) {//false
 
                         $sql = "CREATE TABLE IF NOT EXISTS `" . self::$table_users . "` (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            mail varchar(50) NOT NULL,
-            username varchar(50) NOT NULL,
-            password varchar(255) NOT NULL,
-            session VARCHAR(255) NOT NULL
-  ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;";
+                        id INT AUTO_INCREMENT PRIMARY KEY,
+                        mail varchar(50) NOT NULL,
+                        username varchar(50) NOT NULL,
+                        password varchar(255) NOT NULL,
+                        `group` varchar(50) NOT NULL,
+                        session VARCHAR(255) NOT NULL
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;";
                         self::$db->exec($sql);
                     }
                     break;
@@ -119,13 +123,13 @@ class Network extends Session
                     if (!self::onTableExists(self::$table_articles)) {//false
 
                         $sql = "CREATE TABLE IF NOT EXISTS `" . self::$table_articles . "` (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    title VARCHAR(255) NOT NULL,
-    content TEXT NOT NULL,
-    user_id INT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    FOREIGN KEY (user_id) REFERENCES users(id)
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;";
+                        id INT AUTO_INCREMENT PRIMARY KEY,
+                        title VARCHAR(255) NOT NULL,
+                        content TEXT NOT NULL,
+                        user_id INT NOT NULL,
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        FOREIGN KEY (user_id) REFERENCES users_php(id)
+                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;";
                         self::$db->exec($sql);
                     }
                     break;
@@ -133,10 +137,9 @@ class Network extends Session
                 default:
                     if (!self::onTableExists($type)) {//false
 
-                        $sql = "CREATE TABLE IF NOT EXISTS `$type` (
-                   id INT AUTO_INCREMENT PRIMARY KEY,
-                   title VARCHAR(255) NOT NULL
-               ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;";
+                        $sql = "CREATE TABLE IF NOT EXISTS `" . $type . "` (
+                        id INT AUTO_INCREMENT PRIMARY KEY,
+                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;";
                         message::set('error', "Таблица '$type' не найдена в системе после попытки создания.\nБыла создана базовая таблица с названием '$type'");
                         self::$db->exec($sql);
                     }
@@ -312,6 +315,51 @@ class Network extends Session
                 message::set('error', "Ошибка загрузки класса '$className'. Файл не существует по пути: $filePath");
             }
         });
+    }
+
+    /**
+     * onMail
+     *
+     * @param string $to_mail
+     * @param string $subject
+     * @param string $body
+     * 
+     * @return [type]
+     * 
+     * @example $this->onMail('example@example.com', 'Тема письма', 'Содержание письма');
+     * @description служит для отправки письма / it's need to send email
+     * 
+     */
+    public function onMail(string $to_mail, string $subject, string $body)
+    {
+        if (empty($to_mail)) {
+            message::set('error', "Пустой email получателя!");
+            return false;
+        } elseif (empty($subject)) {
+            message::set('error', "Пустая тема письма!");
+            return false;
+        } elseif (empty($body)) {
+            message::set('error', "Пустое содержание письма!");
+            return false;
+        }
+
+        $mailer = [
+            "email" => "bingiabonbasv@gmail.com",//Отправитель 0
+            "pass" => "tlps uzrg imnf cekl",//Пароль для внешних приложений 1
+            "name" => "bingiabonbasv@gmail.com",//name 2
+            "subject" => $subject,//subject 3
+            "body" => $body,//Мessage 4
+            "to_email" => $to_mail,//Получатель 5
+            "port" => 587,//порт 6
+        ];
+
+        try {
+            (new Structure())->onPHPMailer($mailer);//send
+            return true;
+        } catch (\Exception $e) {
+            message::set('error', "Ошибка отправки письма: " . $e->getMessage());
+            return false;
+        }
     }
 
     /**

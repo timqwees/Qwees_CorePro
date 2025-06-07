@@ -219,7 +219,7 @@ class User extends Network
     {
         try {
             if ($index === 0) {
-                Network::onRedirect(self::$path_login);
+                Network::onRedirect(self::$paths['login']);
                 session_destroy();
                 return false;
             }
@@ -231,19 +231,19 @@ class User extends Network
             if ($stmt->rowCount() === 1) {
                 $found = $stmt->fetch(PDO::FETCH_ASSOC);
                 if ($found['session'] === 'off') {//сессия отключена / вышел с аккаунта
-                    Network::onRedirect(self::$path_login);
+                    Network::onRedirect(self::$paths['login']);
                     session_destroy();
                     return false;
                 }
                 return true;
             }
 
-            Network::onRedirect(self::$path_login);
+            Network::onRedirect(self::$paths['login']);
             session_destroy();
             return false;
         } catch (\PDOException $e) {
             error_log("Ошибка при проверке пользователя: " . $e->getMessage());
-            Network::onRedirect(self::$path_login);
+            Network::onRedirect(self::$paths['login']);
             session_destroy();
             return false;
         }

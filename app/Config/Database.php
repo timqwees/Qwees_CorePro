@@ -43,11 +43,11 @@ use App\Models\Network\Network;
 class Database extends Network
 {
     // Параметры подключения к базе данных
-    private const DB_HOST = 's125.craft-hosting.ru';
+    private const DB_HOST = 'database';
     private const DB_PORT = '3306';
-    private const DB_USERNAME = 'bdp472_s1';
-    private const DB_PASSWORD = '123456';
-    private const DB_NAME = 'bdp472_s1';
+    private const DB_USERNAME = 'docker';
+    private const DB_PASSWORD = 'docker';
+    private const DB_NAME = 'docker';
     private static $instance = [];
 
     public static function getConnection()
@@ -55,26 +55,29 @@ class Database extends Network
         if (empty(self::$instance)) {
             try {
                 $options = [
-                    PDO::ATTR_PERSISTENT => true, // Постоянное соединение
+                    PDO::ATTR_PERSISTENT => false, // Отключаем постоянное соединение
                     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-                    PDO::ATTR_EMULATE_PREPARES => false, // Отключаем эмуляцию для лучшей производительности
-                    PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true, // Используем буферизованные запросы
-                    PDO::ATTR_TIMEOUT => 1, // Таймаут в секундах
+                    PDO::ATTR_EMULATE_PREPARES => false,
+                    PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true,
+                    PDO::ATTR_TIMEOUT => 10, // Увеличиваем таймаут
                     PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8mb4;
                         SET SESSION sql_mode='STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
-                        SET SESSION innodb_lock_wait_timeout=5;
-                        SET SESSION wait_timeout=60;
-                        SET SESSION interactive_timeout=60;
-                        SET SESSION net_read_timeout=10;
-                        SET SESSION net_write_timeout=10;
-                        SET SESSION max_execution_time=1000;"
+                        SET SESSION innodb_lock_wait_timeout=10;
+                        SET SESSION wait_timeout=120;
+                        SET SESSION interactive_timeout=120;
+                        SET SESSION net_read_timeout=60;
+                        SET SESSION net_write_timeout=60;
+                        SET SESSION max_execution_time=2000;
+                        SET SESSION max_allowed_packet=16777216;
+                        SET SESSION net_buffer_length=32768;"
                 ];
 
                 $dsn = "mysql:host=" . self::DB_HOST .
                     ";port=" . self::DB_PORT .
                     ";dbname=" . self::DB_NAME .
-                    ";charset=utf8mb4";
+                    ";charset=utf8mb4" .
+                    ";connect_timeout=10";
 
                 self::$instance = new PDO($dsn, self::DB_USERNAME, self::DB_PASSWORD, $options);
 

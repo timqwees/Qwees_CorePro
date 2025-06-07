@@ -3,11 +3,14 @@
 
 <head>
 	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Вход в систему - TimQwees Technology</title>
-	<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,700" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 	<link rel="stylesheet" href="../../../../public/src/css/style.css">
 	<script defer src='https://cdnjs.cloudflare.com/ajax/libs/gsap/1.20.3/TweenMax.min.js'></script>
 	<script defer src="../../../../public/src/js/main.js"></script>
+	<!-- TRANSLATED -->
+	<script defer src="../../../../public/src/js/lang.js"></script>
 </head>
 
 <body>
@@ -157,28 +160,42 @@
 				</div>
 			</div>
 
+			<!-- ##### TRANSALTED #### -->
+			<div id="google_translate_element"></div>
+
+			<!-- ##### FORM #### -->
 			<div class="inputGroup inputGroup1">
-				<label for="email1">Почта</label>
-				<input type="text" id="email" class="email" maxlength="256" name="mail"
-					placeholder="timqwees@gmail.com" />
-				<span class="indicator"></span>
+				<label for="email">Почта</label>
+				<input type="email" id="email" class="email" maxlength="256" name="mail"
+					placeholder="timqwees@gmail.com" required />
 			</div>
+
 			<div class="inputGroup inputGroup2">
 				<label for="password">Пароль</label>
-				<input type="password" id="password" class="password" name="password" placeholder="********" />
+				<input type="password" id="password" class="password" name="password" placeholder="********" required />
 			</div>
+
 			<div class="inputGroup inputGroup3">
-				<label>
-					<?php if (isset($_SESSION['user'])) { echo $_SESSION['user']['id']; } else { echo 'сессия не активна';}?>
-					<a href="/search/regist" style="text-decoration: underline;">Нет
-						аккаунта?</a>
-				</label>
-				<button id="login">Войти</button>
+				<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+					<span style="color: var(--secondary-text); font-size: 0.875rem;">
+						<?php if (isset($_SESSION['user'])) { echo $_SESSION['user']['id']; } else { echo 'сессия не активна';}?>
+						<a href="/search/regist"
+							style="color: var(--primary-color); font-size: 0.875rem; font-weight: 500;">Нет
+							аккаунта?</a>
+					</span>
+
+				</div>
+				<button type="submit" id="login">Войти</button>
 			</div>
 		</div>
+
+		<!-- ##### NOTIFICATION #### -->
+		<?php if (isset($message['message']) && !empty($message['message'])): ?>
 		<div class="alert alert-<?php echo $message['type']; ?>">
 			<?php echo $message['message']; ?>
 		</div>
+		<?php endif; ?>
+
 	</form>
 
 </body>

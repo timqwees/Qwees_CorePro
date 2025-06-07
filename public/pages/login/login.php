@@ -5,19 +5,19 @@ use App\Controllers\AuthController;
 use App\Models\Network\Network;
 use App\Models\Network\Message;
 
-// Инициализируем сессию
-Network::init();
+// Initialize Network (which will handle session and database)
+$network = new Network();
 
+// Check session after initialization
 if (isset($_SESSION['user'])) {
- Network::onRedirect(Network::$path_account);
+ Network::onRedirect(Network::$paths['account']);
  exit();
 }
 
 $message = Message::controll();
-
 $authController = new AuthController();
 
-// Обработка POST-запроса
+// Handle POST request
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
  try {
   $authController->onLogin();
@@ -26,6 +26,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
  }
 }
 
-//HTML
+// Include view
 include __DIR__ . '/view/auth.html';
 ?>

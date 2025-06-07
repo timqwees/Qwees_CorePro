@@ -57,7 +57,7 @@ if (isset($_SESSION['user']['id'])) {
     $currentUser = $userModel->getUser('id', $_SESSION['user']['id']);
 } else {
     Message::set('error', 'Вы не авторизованы');
-    Network::onRedirect(Network::$path_login);
+    Network::onRedirect(Network::$paths['login']);
     exit();
 }
 
@@ -73,7 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
     // $currentUser['mail'] = $newMail;
     // $currentUser['username'] = $newUsername;
     Message::set('success', 'Профиль успешно обновлен');
-    Network::onRedirect(Network::$path_account);
+    Network::onRedirect(Network::$paths['account']);
 }
 
 

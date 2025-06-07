@@ -4,6 +4,7 @@ CREATE TABLE IF NOT EXISTS `users_php` (
             mail varchar(50) NOT NULL,
             username varchar(50) NOT NULL,
             password varchar(255) NOT NULL,
+            `group` varchar(50) NOT NULL,
             session VARCHAR(255) NOT NULL
   ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -12,6 +13,6 @@ CREATE TABLE IF NOT EXISTS `articles` (
     title VARCHAR(255) NOT NULL,
     content TEXT NOT NULL,
     user_id INT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    FOREIGN KEY (user_id) REFERENCES users(id)
-); 
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users_php(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

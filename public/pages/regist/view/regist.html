@@ -3,15 +3,17 @@
 
 <head>
 	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Регистрация - TimQwees Technology</title>
-	<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,700" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 	<link rel="stylesheet" href="../../../../public/src/css/style.css">
 	<script defer src='https://cdnjs.cloudflare.com/ajax/libs/gsap/1.20.3/TweenMax.min.js'></script>
 	<script defer src="../../../../public/src/js/main.js"></script>
+	<!-- TRANSLATED -->
+	<script defer src="../../../../public/src/js/lang.js"></script>
 </head>
 
 <body>
-
 	<form method="POST" class="FormReg">
 		<div class="svgContainer">
 			<div>
@@ -155,36 +157,48 @@
 			</div>
 		</div>
 
+
+		<!-- ##### TRANSALTED #### -->
+		<div id="google_translate_element"></div>
+
+
+		<!-- ##### NOTIFICATION #### -->
+		<?php if (isset($message['message']) && !empty($message['message'])): ?>
 		<div class="alert alert-<?php echo $message['type']; ?>">
 			<?php echo $message['message']; ?>
 		</div>
+		<?php endif; ?>
 
 		<div class="flex">
 			<div class="inputGroup inputGroup3 reginput">
 				<label for="username">Имя пользователя</label>
-				<input type="text" id="username" class="username" name="username" placeholder="TimQwees" />
+				<input type="text" id="username" class="username" name="username" placeholder="TimQwees" required />
 			</div>
 			<div class="inputGroup inputGroup1 reginput">
-				<label for="email1">Почта</label>
-				<input type="text" id="email" class="email" maxlength="256" name="mail"
-					placeholder="timqwees@gmail.com" />
-				<span class="indicator"></span>
+				<label for="email">Почта</label>
+				<input type="email" id="email" class="email" maxlength="256" name="mail"
+					placeholder="timqwees@gmail.com" required />
 			</div>
 			<div class="inputGroup inputGroup4 reginput">
 				<label for="group">Номер группы</label>
 				<input type="number" id="group" class="group" name="group" placeholder="***" min="100" max="999"
-					pattern="0-9]{3}" />
+					pattern="[0-9]{3}" required />
 			</div>
 			<div class="inputGroup inputGroup2 reginput">
 				<label for="password">Пароль</label>
 				<input type="password" id="password" class="password" name="password" placeholder="********"
-					minlength="6" />
+					minlength="6" required />
 			</div>
 		</div>
 		<div class="inputGroup inputGroup5">
-			<?php if (isset($_SESSION['user'])) { echo $_SESSION['user']['id']; } else { echo 'сессия не активна -';}?>
-			<a href="/search/login" style="text-decoration: underline;">Уже есть аккаунт?</a>
-			<button id=" regist">Зарегистрироваться</button>
+			<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+				<span style="color: var(--secondary-text); font-size: 0.875rem;">
+					<?php if (isset($_SESSION['user'])) { echo $_SESSION['user']['id']; } else { echo 'сессия не активна';}?>
+				</span>
+				<a href="/search/login" style="color: var(--primary-color); font-size: 0.875rem; font-weight: 500;">Уже
+					есть аккаунт?</a>
+			</div>
+			<button type="submit" id="regist">Зарегистрироваться</button>
 		</div>
 	</form>
 </body>
